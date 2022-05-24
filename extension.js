@@ -122,11 +122,11 @@ function jsonExtract(text){
             re.lastIndex++;
         }
 
-        // key = m[1];
-    
-        // Todo : change key name AND merge keys in array
-        lines.toFakeHash();
+        key = m[1];
+        lines.push(key);
     }
+
+	lines.toFakeHash();
     
     return JSON.stringify(lines);
 }
