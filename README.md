@@ -2,10 +2,6 @@
 
 Extract json variables from a document and export them to a json file for Visual Studio Code.
 
-[![GitHub license][license-img]][license-url]
-[![Visual Studio Marketplace][vs-market-version]][vs-market-url]
-[![Visual Studio Marketplace installs][vs-market-installs]][vs-market-url]
-
 ## Features
 
 * `Export to file` Extracts the variables between {{ }} and exports the schema to a json file
