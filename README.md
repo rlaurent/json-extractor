@@ -6,6 +6,11 @@ Extract json variables from a document and export them to a json file for Visual
 
 * `Export to file` Extracts the variables between {{ }} and exports the schema to a json file
 
+## It looks like this
+
+![JSON Extractor export](https://github.com/rlaurent/json-extractor/blob/main/export-tuto.gif?raw=true)
+
+
 ## Installation
 
 Press `F1`, type `ext install vscode-json-extractor`.
