@@ -1,6 +1,10 @@
 # JSON Extractor
 
-Extract json variables from a document and export them to a json file.
+Extract json variables from a document and export them to a json file for Visual Studio Code.
+
+[![GitHub license][license-img]][license-url]
+[![Visual Studio Marketplace][vs-market-version]][vs-market-url]
+[![Visual Studio Marketplace installs][vs-market-installs]][vs-market-url]
 
 ## Features
 
@@ -25,3 +29,7 @@ This is the initial release of this extension.
 ## Contributors
 - Romain Laurent ([@rlaurent](https://github.com/rlaurent))
 - Skryle ([@skrylex](https://github.com/Skrylex))
+
+## License
+
+This extension is licensed under the [MIT License][license-url].
