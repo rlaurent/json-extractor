@@ -10,14 +10,20 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:json-extractor.export-to-file"
+    "onCommand:json-extractor.export-to-file",
+    "onCommand:json-extractor.preview"
+
   ],
   "main": "./extension.js",
   "contributes": {
     "commands": [
       {
         "command": "json-extractor.export-to-file",
-        "title": "Export to file"
+        "title": "Export to File"
+      },
+      {
+        "command": "json-extractor.preview",
+        "title": "Open Preview"
       }
     ]
   },

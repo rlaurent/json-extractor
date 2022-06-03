@@ -4,6 +4,9 @@ const fs = require('fs');
 const path = require('path');
 const { faker } = require('@faker-js/faker');
 
+let openedDocuments = [];
+let previewOpen = false;
+
 Array.prototype.toFakeHash = function(separator = ".") {
 	const buildBranch = (datas = [], json = {}, current = null) => {
 	  if (!datas.length){
@@ -53,11 +56,112 @@ Array.prototype.toFakeHash = function(separator = ".") {
  */
 function activate(context) {
 
-	let disposable = vscode.commands.registerCommand('json-extractor.export-to-file', function () {
+	let exportToFile = vscode.commands.registerCommand('json-extractor.export-to-file', function () {
 		exportFile();
 	});
 
-	context.subscriptions.push(disposable);
+	let preview = vscode.commands.registerCommand('json-extractor.preview', function () {
+		previewJson();
+	});
+
+	context.subscriptions.push(exportToFile);
+	context.subscriptions.push(preview);
+}
+
+function previewJson() {
+	if (vscode.window.activeTextEditor) {
+			previewOpen = true;
+			displayWebView(vscode.window.activeTextEditor.document);
+	} else {
+		vscode.window.showErrorMessage("Active editor doesn't show a MJML document.");
+	}
+}
+
+vscode.workspace.onDidOpenTextDocument((document) => {
+	if (document && previewOpen && vscode.workspace.autoPreview) {
+			displayWebView(document);
+	}
+}),
+
+vscode.window.onDidChangeActiveTextEditor((editor) => {
+	if (editor && previewOpen && vscode.workspace.autoPreview) {
+			displayWebView(editor.document);
+	}
+}),
+
+vscode.workspace.onDidChangeTextDocument((event) => {
+	if (event && previewOpen && vscode.workspace.updateWhenTyping) {
+			displayWebView(event.document);
+	}
+}),
+
+vscode.workspace.onDidSaveTextDocument((document) => {
+	if (document && previewOpen) {
+			displayWebView(document);
+	}
+}),
+
+vscode.workspace.onDidCloseTextDocument((document) => {
+	if (document && previewOpen && webview) {
+			removeDocument(document.fileName);
+
+			if (this.openedDocuments.length === 0 && vscode.workspace.autoClosePreview) {
+					this.dispose();
+			}
+	}
+})
+
+function displayWebView(document) {
+
+	const activeTextEditor = vscode.window.activeTextEditor;
+	if (!activeTextEditor || !activeTextEditor.document) {
+			return;
+	}
+
+	const content = getContent(document);
+	const label = `Json Preview - ${path.basename(activeTextEditor.document.fileName)}`;
+
+	if (!this.webview) {
+			this.webview = vscode.window.createWebviewPanel("mjml-preview", label, vscode.ViewColumn.Two, {
+					retainContextWhenHidden: true
+			});
+
+			this.webview.webview.html = content;
+
+			this.webview.onDidDispose(() => {
+					this.webview = undefined;
+					this.previewOpen = false;
+			}, null, this.subscriptions);
+
+			if (vscode.workspace.preserveFocus) {
+					// Preserve focus of Text Editor after preview open
+					vscode.window.showTextDocument(activeTextEditor.document, vscode.ViewColumn.One);
+			}
+	} else {
+			this.webview.title = label;
+			this.webview.webview.html = content;
+	}
+}
+
+function getContent(document) {
+
+	let content = jsonExtract(
+			document.getText()
+	);
+
+	if (content) {
+			addDocument(document.fileName);
+
+			return content;
+	}
+
+	return this.error("Active editor doesn't show a document.");
+}
+
+function addDocument(fileName) {
+	if (openedDocuments.indexOf(fileName) === -1) {
+			openedDocuments.push(fileName);
+	}
 }
 
 function exportFile() {
