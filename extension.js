@@ -73,7 +73,7 @@ function previewJson() {
 			previewOpen = true;
 			displayWebView(vscode.window.activeTextEditor.document);
 	} else {
-		vscode.window.showErrorMessage("Active editor doesn't show a MJML document.");
+		vscode.window.showErrorMessage("Active editor doesn't show a document.");
 	}
 }
 
@@ -90,7 +90,7 @@ vscode.window.onDidChangeActiveTextEditor((editor) => {
 }),
 
 vscode.workspace.onDidChangeTextDocument((event) => {
-	if (event && previewOpen && vscode.workspace.updateWhenTyping) {
+	if (event && previewOpen) {
 			displayWebView(event.document);
 	}
 }),
@@ -102,7 +102,7 @@ vscode.workspace.onDidSaveTextDocument((document) => {
 }),
 
 vscode.workspace.onDidCloseTextDocument((document) => {
-	if (document && previewOpen && webview) {
+	if (document && previewOpen && displayWebView.webview) {
 			removeDocument(document.fileName);
 
 			if (this.openedDocuments.length === 0 && vscode.workspace.autoClosePreview) {
@@ -118,11 +118,11 @@ function displayWebView(document) {
 			return;
 	}
 
-	const content = getContent(document);
 	const label = `Json Preview - ${path.basename(activeTextEditor.document.fileName)}`;
+	const content = "<html><pre>" + JSON.stringify(JSON.parse(getContent(document)), null, 2) + "</pre></html>";
 
 	if (!this.webview) {
-			this.webview = vscode.window.createWebviewPanel("mjml-preview", label, vscode.ViewColumn.Two, {
+			this.webview = vscode.window.createWebviewPanel("json-preview", label, vscode.ViewColumn.Two, {
 					retainContextWhenHidden: true
 			});
 
@@ -146,7 +146,7 @@ function displayWebView(document) {
 function getContent(document) {
 
 	let content = jsonExtract(
-			document.getText()
+		document.getText()
 	);
 
 	if (content) {
