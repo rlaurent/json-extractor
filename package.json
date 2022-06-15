@@ -12,7 +12,6 @@
   "activationEvents": [
     "onCommand:json-extractor.export-to-file",
     "onCommand:json-extractor.preview"
-
   ],
   "main": "./extension.js",
   "contributes": {
